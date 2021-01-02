@@ -9,37 +9,40 @@ a = input()
 os.chdir(a)
 
 flist = os.listdir(a)
-#print(flist)
 
 def setList(s,ilist):
     os.chdir(s)
     glist = []
-    #print(ilist)
+    
     for i in range(len(ilist)):
-        #print(ilist[i])
-        #print(i)
         if os.path.isdir(ilist[i]):
-            #print(ilist[i])
             cntn.append(i)
             cnts.append(ilist[i])
-            #print(ilist)
             glist = os.listdir(ilist[i])
+            
+            print("ilist(before setList)")
+            print(all([os.path.isdir(ilist[h]) or os.path.isfile(ilist[h]) for h in range(len(ilist))]))
+            #ilistが全てファイルかディレクトリである事が分かる
+            
             setList(ilist[i],glist)
-            print(ilist[i])
+                        
+            print("ilist(after setList)")
+            print(any([os.path.isdir(ilist[h]) or os.path.isfile(ilist[h]) for h in range(len(ilist))])) 
+            #ilistが全てファイルでもディレクトリでもない事が分かる
+            
             del ilist[i]
-            #print(ilist)
-            ilist.extend(glist)
-            print(ilist[i])
+            ilist[i:i] = glist
+
+        if os.path.isdir(ilist[i]):
             print(i)
-            if os.path.isdir(ilist[i]):
-                cntn.append(i)
-                cnts.append(ilist[i])
-                #print(ilist[i])
-                glist = os.listdir(ilist[i])
-                setList(ilist[i],glist)
-                del ilist[i]
-                #print(ilist)
-                ilist.extend(glist)
+            cntn.append(i)
+            cnts.append(ilist[i])
+            glist = os.listdir(ilist[i])
+            
+            setList(ilist[i],glist)
+            
+            del ilist[i]
+            ilist[i:i] = glist
 
 setList(a,flist)
 print(flist)
@@ -47,15 +50,14 @@ print(cntn)
 print(cnts)
 os.chdir(a)
 
-for i in range(len(flist)):
-    l = 0
-    #os.chdir(a)
-    #print(flist[i])
-    if i == cntn[l]:
-        os.chdir(cnts[l])
-        l += 1
+l = 0
+for i in range(len(flist)):    
+    if cntn:
+        if i == cntn[l]:
+            os.chdir(cnts[l])
+            if l < len(cntn) - 1:
+                l += 1
     num += os.path.getsize(flist[i])
 
-#print(flist)
 print("number of file :" + str(len(flist)))
 print("size of file   :" + str(num))
